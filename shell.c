@@ -3,7 +3,7 @@
  * Author: <Carlos Sosa>
  *
  * Created:     <28/08/2017>
- * Modified:    <09/09/2017>
+ * Modified:    <17/09/2017>
  */
 
 /* Librerias a utilizar */
@@ -11,28 +11,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Declaracion de funciones */
-void shLoop(void);
-char *shReadLine(void);
-char **shParseLine(char *line);
-int shExecute(char **tokens);
+/* Header del sistema */
+#include "system.h"
 
-/* Definir valores estaticos */
-#define TOKEN_BUF_SIZE 64
-#define TOKEN_DELIMITER " \t\r\n\a"
-
-/*
- * Main loop
- */
-int main(int argc, char** argv) {
-
-    shLoop();
-    return (EXIT_SUCCESS);
-}
+/* Headers de aplicaciones */
+// #include "calc.h"
+// #include "media.h"
 
 /**
-* Loop que administra las funciones del shell
-* [Funcion que se llama desde el kernel]
+* Loop que administra el funcionamiento del shell
 */
 void shLoop(void)
 {
@@ -43,7 +30,7 @@ void shLoop(void)
     do {
 
         /*Texto en pantalla*/
-        printf("Los Debian> ");
+        sys_tag();
 
         /*Leer una linea ingresada por el usuario*/
         line = shReadLine();
@@ -103,12 +90,12 @@ char **shParseLine(char *line)
 
         /*Asigna mas especio en memoria al arreglo*/
         if (position >= bufferSize) {
-        bufferSize += TOKEN_BUF_SIZE;
-        tokens = realloc(tokens, bufferSize * sizeof(char*));
-        if (!tokens) {
-            fprintf(stderr, "ERROR\n");
-            exit(EXIT_FAILURE);
-        }
+            bufferSize += TOKEN_BUF_SIZE;
+            tokens = realloc(tokens, bufferSize * sizeof(char*));
+            if (!tokens) {
+                fprintf(stderr, "ERROR\n");
+                exit(EXIT_FAILURE);
+            }
         }
 
         token = strtok(NULL, TOKEN_DELIMITER);
@@ -126,6 +113,61 @@ char **shParseLine(char *line)
 */
 int shExecute(char **tokens)
 {
-    // Exec programs
+    char *cmd = tokens[0];
+    char *action = tokens[1];
+
+    switch (shFindCmdID(cmd))
+    {
+        /*DISPLAY*/
+        case 0:
+            c_clear();
+            return 0;
+        
+        /*SYSTEM*/
+        case 1:
+            return sys_exec(action);
+            
+        /*CALC*/
+        case 2:
+            printf("%s \n", "No esta instalada la calculadora");
+            return 0;
+
+        /*MUSIC*/
+        case 3:
+            printf("%s \n", "No esta instalado el reproductor de media");
+            return 0;
+
+        default:
+            printf("\nNo se reconoce el comando ingresado.\n\n");
+            return 0;
+    }
+}
+
+/**
+* Funcion que busca el ID del comando ejecutado
+*/
+int shFindCmdID(char *cmd) 
+{
+    /*Limpia la pantalla*/
+    if (!strcmp(cmd, "clear")){
+        return 0;
+    }
+
+    /*Informacion del sistema*/
+    if (!strcmp(cmd, "system")){
+        return 1;
+    }
+    
+    /*Calculadora*/
+    if (!strcmp(cmd, "calc")){
+        return 2;
+    }
+        
+    /*Reproductor de musica*/
+    if (!strcmp(cmd, "music")){
+        return 3;
+    }
+
+    /*Default return*/
     return 0;
 }
