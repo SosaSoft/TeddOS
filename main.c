@@ -1,9 +1,6 @@
 /* 
  * File:   Shell.c
- * Author: <Ary "El Jefe">
- *
- * Created:     <--/--/2017>
- * Modified:    <16/09/2017>
+ * Author: <Carlos Sosa>
  */
 int main()
 {
