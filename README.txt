@@ -1,7 +1,7 @@
 TeddOS Compile
 
 COMPILE KERNEL FILE:
-~ as -o kernel.o -o kernel.asm
+~ as -o kernel.o kernel.asm
 
 COMPILE C FILE:
 ~ gcc -o main.o -c main.c -nostdlib -fPIC -ffreestanding
